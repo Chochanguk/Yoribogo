@@ -5,7 +5,7 @@ FROM mariadb:latest
 ENV MYSQL_ROOT_PASSWORD=mariadb
 ENV MYSQL_DATABASE=yoribogodb
 # init.sql에 설정된 비밀번호
-# .gitignore에 설정했으나 참고를 위해서 집어 넣음
+
 
 
 # 초기 SQL 파일 복사 (선택 사항)

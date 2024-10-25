@@ -66,12 +66,15 @@ const defaultImage = ref(
 
 const fetchData = async () => {
   try {
+    console.log("Fetching recipe data..."); // 로그 추가
     const recipeResponse = (await axios.get(`/boot/api/recipes/${route.params.recipeId}`)).data
+    console.log("Recipe data:", recipeResponse); // 받아온 데이터 로그
     if (recipeResponse.success) {
       menuInfo.value = recipeResponse.data
       menuImageSrc.value = menuInfo.value.menu_image || defaultImage.value
-
+      console.log("Fetching manual data..."); // 로그 추가
       const manualResponse = (await axios.get(`/boot/api/manuals?recipe=${route.params.recipeId}`)).data
+      console.log("Manual data:", manualResponse); // 받아온 데이터 로그
       if (manualResponse.success) {
         manualList.value = manualResponse.data
       } else {
@@ -89,7 +92,7 @@ const fetchData = async () => {
 
         const data = response.body
         const reader = data?.getReader()
-        const decoder = new TextDecoder()
+        const decoder = new TextDecoder('utf-8');
         const maxLength = 6
         let done = false
         let lastMessage = ''
@@ -100,9 +103,9 @@ const fetchData = async () => {
           done = doneReading
           const chunkValue = decoder.decode(value)
           lastMessage += chunkValue
-
+          console.log("Chunk received:", chunkValue); // 매번 받은 청크 데이터 로그
           text = lastMessage.replaceAll('data:', '').replace(/\n/g, '')
-
+          console.log("Processed text:", text); // 가공된 텍스트 로그
           // 공백만 있을 경우
           if (text.trim() === '') {
             lastMessage = ''
@@ -111,6 +114,7 @@ const fetchData = async () => {
 
           // 문장이 문자.으로 끝날 경우
           if (/[a-zA-Z가-힣]\.$/.test(text)) {
+            console.log("Complete sentence:", text); // 완성된 문장 로그
             manualList.value[manualList.value.length - 1].manual_content = text.trim()
             lastMessage = ''
             text = ''
@@ -121,6 +125,7 @@ const fetchData = async () => {
           }
           // 이외의 경우 (수집 중인 문장이므로 마지막 항목 업데이트)
           else {
+            console.log("Appending incomplete sentence:", text); // 미완성 문장 로그
             if (manualList.value.length > 0) {
               manualList.value[manualList.value.length - 1].manual_content = text.trim()
             } else {
@@ -131,6 +136,7 @@ const fetchData = async () => {
 
         // 마지막 text가 문자.으로 끝나지 않을 경우에도 처리
         if (text !== '') {
+          console.log("Final text update:", text); // 마지막 업데이트 로그
           manualList.value[manualList.value.length - 1].manual_content = text.trim()
         }
       }
@@ -157,7 +163,6 @@ let eventSource = null
 
 const handleImageUpdate = (event) => {
   menuImageSrc.value = event.data
-
   if (eventSource) {
     eventSource.removeEventListener('image-update', handleImageUpdate)
     eventSource.close() // 연결 종료
@@ -168,9 +173,12 @@ onMounted(async () => {
   if (localStorage.getItem('token')) {
     isLogin.value = true
   }
-
   await fetchData()
+  // SSE 연결 생성
+  eventSource = new EventSource('/boot/api/notifications/sseconnect')
+  eventSource.addEventListener('image-update', handleImageUpdate)
 })
+
 </script>
 
 <style scoped>

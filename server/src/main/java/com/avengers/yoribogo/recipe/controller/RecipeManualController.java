@@ -7,9 +7,11 @@ import com.avengers.yoribogo.recipe.dto.RequestRecipeManualDTO;
 import com.avengers.yoribogo.recipe.service.RecipeManualService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @RestController
@@ -40,9 +42,9 @@ public class RecipeManualController {
     }
 
     // AI 요리 레시피 매뉴얼 등록
-    @PostMapping(value="/ai", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    @PostMapping(value = "/ai", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<String> createAIRecipeManual(@RequestParam("recipe") Long recipeId,
-                                               @RequestBody RequestAIRecipeManualDTO requestAIRecipeManualDTO) {
+                                             @RequestBody RequestAIRecipeManualDTO requestAIRecipeManualDTO) {
         return recipeManualService.registAIRecipeManual(recipeId, requestAIRecipeManualDTO);
     }
 

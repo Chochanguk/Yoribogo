@@ -16,7 +16,8 @@ import { computed } from 'vue'
 const props = defineProps({
   data: {
     type: Object,
-    required: true
+    required: true,
+    default: () => ({})
   }
 })
 
@@ -24,12 +25,13 @@ const emit = defineEmits(['changePage'])
 
 // 페이지 계산을 위한 유효성 검사
 const totalPages = computed(() => {
-  return props.data.totalPages > 0 ? props.data.totalPages : 1 // 최소 1 페이지로 설정
+  return (props.data && props.data.totalPages > 0) ? props.data.totalPages : 1 // 최소 1 페이지로 설정
 })
 
 const currentPage = computed(() => {
-  return props.data.number >= 0 ? props.data.number + 1 : 1 // 현재 페이지 (0부터 시작하므로 +1)
-})
+  // props.data가 정의되어 있는 경우에만 접근
+  return (props.data && props.data.number >= 0) ? props.data.number + 1 : 1; // 현재 페이지 (0부터 시작하므로 +1)
+});
 
 // 페이지 이동 함수
 const nextPage = () => {

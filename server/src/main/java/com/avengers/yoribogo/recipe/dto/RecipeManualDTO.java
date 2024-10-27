@@ -24,7 +24,4 @@ public class RecipeManualDTO {
     @JsonProperty("manual_content")
     private String manualContent;
 
-    @JsonProperty("recipe_id")
-    private Long recipeId;
-
 }

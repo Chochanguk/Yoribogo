@@ -26,7 +26,8 @@ public class RecipeManual {
     @Column(name = "MANUAL_CONTENT")
     private String manualContent;
 
-    @Column(name = "RECIPE_ID")
-    private Long recipeId;
+    @ManyToOne
+    @JoinColumn(name = "RECIPE_ID")
+    private Recipe recipe;
 
 }

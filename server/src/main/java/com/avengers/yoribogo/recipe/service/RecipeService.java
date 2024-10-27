@@ -2,6 +2,7 @@ package com.avengers.yoribogo.recipe.service;
 
 import com.avengers.yoribogo.recipe.dto.BaseRecipeDTO;
 import com.avengers.yoribogo.recipe.dto.RecipeDTO;
+import com.avengers.yoribogo.recipe.dto.RecipeWithManualsDTO;
 import com.avengers.yoribogo.recipe.dto.RequestRecommendDTO;
 import org.springframework.data.domain.Page;
 
@@ -12,6 +13,9 @@ public interface RecipeService {
 
     // 요리 레시피 단건 조회
     RecipeDTO findRecipeByRecipeId(Long recipeId);
+
+    // 요리 레시피 매뉴얼과 같이 단건 조회
+    RecipeWithManualsDTO findRecipeWithManualsByRecipeId(Long recipeId);
 
     // 요리 레시피 요리 이름으로 조회
     Page<RecipeDTO> findRecipeByMenuName(String menuName, Integer pageNo);

@@ -21,9 +21,9 @@ const notifications = ref([]) // 알림 데이터를 저장할 상태
 
 // 읽지 않은 알림의 개수를 계산하는 computed
 const unreadCount = computed(() => {
-  return notifications.value.filter(
+  return notifications.value ? notifications.value.filter(
     (notification) => notification.notificationStatus === 'UNREAD'
-  ).length
+  ).length : 0
 })
 
 // SSE 연결 설정 (실시간 알림 처리)

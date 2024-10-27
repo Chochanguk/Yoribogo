@@ -4,6 +4,7 @@ import com.avengers.yoribogo.common.exception.CommonException;
 import com.avengers.yoribogo.recipe.domain.MenuType;
 import com.avengers.yoribogo.recipe.dto.BaseRecipeDTO;
 import com.avengers.yoribogo.recipe.dto.RecipeDTO;
+import com.avengers.yoribogo.recipe.dto.RecipeWithManualsDTO;
 import com.avengers.yoribogo.recipe.dto.RequestRecommendDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
@@ -49,6 +50,22 @@ class RecipeServiceTests {
 
         // When
         RecipeDTO recipeDTO = recipeService.findRecipeByRecipeId(recipeId);
+
+        // Then
+        Assertions.assertNotNull(recipeDTO, "레시피가 null 입니다.");
+
+        // 요소를 로그로 찍기
+        log.info(recipeDTO.toString());
+    }
+
+    @DisplayName("요리 레시피와 매뉴얼 같이 단건 조회")
+    @Test
+    void testFindRecipeWithManualsByRecipeId() {
+        // Given
+        Long recipeId = 1L;
+
+        // When
+        RecipeWithManualsDTO recipeDTO = recipeService.findRecipeWithManualsByRecipeId(recipeId);
 
         // Then
         Assertions.assertNotNull(recipeDTO, "레시피가 null 입니다.");

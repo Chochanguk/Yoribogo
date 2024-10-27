@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Table(name = "RECIPE")
 @NoArgsConstructor
@@ -32,5 +34,8 @@ public class Recipe {
 
     @Column(name = "USER_ID")
     private Long userId;
+
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RecipeManual> recipeManuals;
 
 }

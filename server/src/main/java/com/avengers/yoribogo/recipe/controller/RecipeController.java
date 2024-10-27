@@ -3,8 +3,9 @@ package com.avengers.yoribogo.recipe.controller;
 import com.avengers.yoribogo.common.ResponseDTO;
 import com.avengers.yoribogo.recipe.dto.BaseRecipeDTO;
 import com.avengers.yoribogo.recipe.dto.RecipeDTO;
+import com.avengers.yoribogo.recipe.dto.RecipeWithManualsDTO;
 import com.avengers.yoribogo.recipe.dto.RequestRecommendDTO;
-import com.avengers.yoribogo.recipe.service.RecipeServiceImpl;
+import com.avengers.yoribogo.recipe.service.RecipeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
@@ -13,10 +14,10 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/recipes")
 public class RecipeController {
 
-    private final RecipeServiceImpl recipeService;
+    private final RecipeService recipeService;
 
     @Autowired
-    public RecipeController(RecipeServiceImpl recipeService) {
+    public RecipeController(RecipeService recipeService) {
         this.recipeService = recipeService;
     }
 
@@ -30,7 +31,7 @@ public class RecipeController {
     // 요리 레시피 단건 조회
     @GetMapping("/{recipeId}")
     public ResponseDTO<?> getRecipeByRecipeId(@PathVariable("recipeId") Long recipeId) {
-        RecipeDTO recipeDTO = recipeService.findRecipeByRecipeId(recipeId);
+        RecipeWithManualsDTO recipeDTO = recipeService.findRecipeWithManualsByRecipeId(recipeId);
         return ResponseDTO.ok(recipeDTO);
     }
 

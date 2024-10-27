@@ -24,7 +24,6 @@ public class RecipeServiceImpl implements RecipeService {
 
     private final ModelMapper modelMapper;
     private final RecipeRepository recipeRepository;
-    private final RecipeManualService recipeManualService;
     private final PublicDataRecipeService publicDataRecipeService;
     private final AIRecipeService aiRecipeService;
     private final OpenAIService openAIService;
@@ -33,14 +32,12 @@ public class RecipeServiceImpl implements RecipeService {
     @Autowired
     public RecipeServiceImpl(ModelMapper modelMapper,
                              RecipeRepository recipeRepository,
-                             RecipeManualService recipeManualService,
                              PublicDataRecipeService publicDataRecipeService,
                              AIRecipeService aiRecipeService,
                              OpenAIService openAIService,
                              ImageService imageService) {
         this.modelMapper = modelMapper;
         this.recipeRepository = recipeRepository;
-        this.recipeManualService = recipeManualService;
         this.publicDataRecipeService = publicDataRecipeService;
         this.aiRecipeService = aiRecipeService;
         this.openAIService = openAIService;
@@ -80,7 +77,19 @@ public class RecipeServiceImpl implements RecipeService {
         // 레시피 조회
         Recipe recipe = recipeRepository.findById(recipeId)
                 .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_RECIPE));
+
         return modelMapper.map(recipe, RecipeDTO.class);
+    }
+
+    // 요리 레시피 매뉴얼과 같이 단건 조회
+    @Override
+    public RecipeWithManualsDTO findRecipeWithManualsByRecipeId(Long recipeId) {
+        // 레시피 조회
+        Recipe recipe = recipeRepository.findRecipeWithManuals(recipeId);
+
+        if (recipe == null) throw new CommonException(ErrorCode.NOT_FOUND_RECIPE);
+
+        return modelMapper.map(recipe, RecipeWithManualsDTO.class);
     }
 
     // 요리 레시피 요리 이름으로 조회

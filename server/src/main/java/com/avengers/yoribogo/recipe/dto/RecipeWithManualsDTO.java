@@ -15,12 +15,15 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @SuperBuilder
-public class RecipeDTO extends BaseRecipeDTO {
+public class RecipeWithManualsDTO extends BaseRecipeDTO {
 
     @JsonProperty("menu_type")
     private MenuType menuType;
 
     @JsonProperty("user_id")
     private Long userId;
+
+    @JsonProperty("manuals")
+    private List<RecipeManualDTO> recipeManuals; // RecipeManualDTO의 리스트
 
 }

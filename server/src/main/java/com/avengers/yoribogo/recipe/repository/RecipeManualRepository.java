@@ -2,12 +2,13 @@ package com.avengers.yoribogo.recipe.repository;
 
 import com.avengers.yoribogo.recipe.domain.RecipeManual;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
 public interface RecipeManualRepository extends JpaRepository<RecipeManual, Long> {
 
-    // 요리 레시피 아이디로 매뉴얼 조회
+    @Query("SELECT rm FROM RecipeManual rm WHERE rm.recipe.recipeId = :recipeId")
     List<RecipeManual> findByRecipeId(Long recipeId);
 
 }

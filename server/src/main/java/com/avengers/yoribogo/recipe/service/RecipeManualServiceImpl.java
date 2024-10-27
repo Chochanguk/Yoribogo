@@ -3,6 +3,7 @@ package com.avengers.yoribogo.recipe.service;
 import com.avengers.yoribogo.common.exception.CommonException;
 import com.avengers.yoribogo.common.exception.ErrorCode;
 import com.avengers.yoribogo.openai.service.OpenAIService;
+import com.avengers.yoribogo.recipe.domain.Recipe;
 import com.avengers.yoribogo.recipe.domain.RecipeManual;
 import com.avengers.yoribogo.recipe.dto.RecipeManualDTO;
 import com.avengers.yoribogo.recipe.dto.RequestAIRecipeManualDTO;
@@ -24,8 +25,8 @@ import java.util.*;
 public class RecipeManualServiceImpl implements RecipeManualService {
 
     private final ModelMapper modelMapper;
-    private final RecipeRepository recipeRepository;
     private final RecipeManualRepository recipeManualRepository;
+    private final RecipeRepository recipeRepository;
     private final OpenAIService openAIService;
 
     @Autowired
@@ -58,6 +59,9 @@ public class RecipeManualServiceImpl implements RecipeManualService {
     @Override
     @Transactional
     public List<RecipeManualDTO> registRecipeManual(Long recipeId, RequestRecipeManualDTO requestRecipeManualDTO) {
+        Recipe recipe = recipeRepository.findById(recipeId)
+                .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_RECIPE));
+
         List<RecipeManual> recipeManualList = new ArrayList<>();
 
         List<Map<String,String>> manual = requestRecipeManualDTO.getManual();
@@ -68,11 +72,12 @@ public class RecipeManualServiceImpl implements RecipeManualService {
                     .recipeManualStep(i+1)
                     .manualMenuImage(manual.get(i).get("image"))
                     .manualContent(manual.get(i).get("content"))
-                    .recipeId(recipeId)
                     .build();
 
             // 매뉴얼 등록
-            recipeManualList.add(recipeManualRepository.save(modelMapper.map(newRecipeManualDTO, RecipeManual.class)));
+            RecipeManual recipeManual = modelMapper.map(newRecipeManualDTO, RecipeManual.class);
+            recipeManual.setRecipe(recipe);
+            recipeManualList.add(recipeManualRepository.save(recipeManual));
         }
 
         // RecipeManual -> RecipeManualDTO 변환 및 List 반환
@@ -145,6 +150,9 @@ public class RecipeManualServiceImpl implements RecipeManualService {
 
     // AI 생성 매뉴얼 등록에 사용하는 메소드
     private void registRecipeManual(Long recipeId, String aiAnswerRecipe) {
+        Recipe recipe = recipeRepository.findById(recipeId)
+                .orElseThrow(() -> new CommonException(ErrorCode.NOT_FOUND_RECIPE));
+
         // AI가 생성한 요리 레시피 매뉴얼 등록
         List<Map<String, String>> manual = new ArrayList<>();
 
@@ -162,11 +170,12 @@ public class RecipeManualServiceImpl implements RecipeManualService {
                     .recipeManualStep(i + 1)
                     .manualMenuImage(manual.get(i).get("image"))
                     .manualContent(manual.get(i).get("content"))
-                    .recipeId(recipeId)
                     .build();
 
             // 매뉴얼 등록
-            recipeManualRepository.save(modelMapper.map(newRecipeManualDTO, RecipeManual.class));
+            RecipeManual recipeManual = modelMapper.map(newRecipeManualDTO, RecipeManual.class);
+            recipeManual.setRecipe(recipe);
+            recipeManualRepository.save(recipeManual);
         }
     }
 
